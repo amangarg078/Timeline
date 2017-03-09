@@ -1,0 +1,48 @@
+{% extends 'app/base.html'%}
+{% load staticfiles%}
+{% block content %}
+<div class="container">
+<div class="header clearfix">
+<div>
+<div class="container page-header hpad">
+	<div class="row">
+		<div class="col-md-2">
+		</div>
+		<div class="col-md-8 cent body">
+
+<h1>  Add Genre </h1>
+<form method="POST" action="" class="form-horizontal">
+
+    {% csrf_token %}
+   {% for field in form %}
+
+    <div class="form-group">
+        <label class="col-sm-4 control-label">{{field.label}} : </label>
+        <div class="col-sm-6">
+        {{ field }}
+    </div>
+    </div>
+    {% endfor %}
+<input type="submit" class="btn btn-success" value="Submit" />
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

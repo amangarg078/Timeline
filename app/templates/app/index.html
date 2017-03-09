@@ -1,0 +1,56 @@
+{% extends 'app/base.html'%}
+{% load staticfiles %}
+{% block content %}
+<div class="container page-header hpad">
+    <div class="row">
+        <div class="col-md-3">
+        </div>
+    <div class="col-md-6 cent body">
+
+        <h1>   Music Tracks </h1>
+        <form method="POST" action="" class="form-horizontal" enctype="multipart/form-data">
+
+        {% csrf_token %}
+        {% for field in form %}
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">{{field.label}} : </label>
+                <div class="col-sm-6">
+                    {{ field }}
+                </div>
+            </div>
+        {% endfor %}
+        <button class="btn btn-default" type="submit" value="post" >Post </button>
+
+	    <br/>
+
+        </form>
+        <ul class="posts ">
+            {% for i in result%}
+                <li class="post post-content">
+                    <div>
+
+                        <span style="float: left"> <b> {{i.user.username}} &nbsp; </b></span>
+                        <span style="float: center"><b>  {{i.description}} &nbsp; </b></span>
+                        <span style="float: right"> {{i.date_created|timesince}} &nbsp; </span>
+                            </br>
+                            {% if i.post_type_id == 1 %}
+                                <p>{{ i.article.article_text }}</p>
+
+                            {% elif i.post_type_id == 2 %}
+
+                                <a href="{{i.filepost.file.url}}"><img src="{{i.filepost.file.url}}" height="200px" width="200px" class="img-circle"/><a><br/>
+                            {% elif i.post_type_id == 3 %}
+                                <video width="320" height="240" controls>
+                                    <source src="{{ i.filepost.file.url }}" >
+                                </video>
+                            {% endif %}
+                    </div>
+                </li>
+
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+</div>
+{% endblock %}
