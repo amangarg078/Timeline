@@ -7,7 +7,8 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 # Create your views here.
 
-def filehandler(request, description, upload):
+
+def filehandler(request, upload):
     import os
 
     ext = os.path.splitext(upload.name)[1]
@@ -39,7 +40,7 @@ def index(request):
                 form = MyForm()
 
             elif (upload is not None) and (not article_text):
-                post_type_id = filehandler(request, description, upload)
+                post_type_id = filehandler(request, upload)
                 if post_type_id is not None:
                     filepost = FilePost(post_type_id=post_type_id, user=request.user, file=upload,
                                         description=description)
