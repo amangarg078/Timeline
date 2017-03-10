@@ -7,7 +7,9 @@
         </div>
     <div class="col-md-6 cent body">
 
-        <h1>   Music Tracks </h1>
+        <h1>   Timeline!! </h1>
+        <h4> Enter an article or upload an image/video (for now!)</h4>
+        </br>
         <form method="POST" action="" class="form-horizontal" enctype="multipart/form-data">
 
         {% csrf_token %}
@@ -30,16 +32,16 @@
                 <li class="post post-content">
                     <div>
 
-                        <span style="float: left"> <b> {{i.user.username}} &nbsp; </b></span>
-                        <span style="float: center"><b>  {{i.description}} &nbsp; </b></span>
-                        <span style="float: right"> {{i.date_created|timesince}} &nbsp; </span>
-                            </br>
+                        <span style="float: left"> <b> {{i.user.username}} </b></span>
+                        <span style="float: center"><b>  {{i.description}} </b></span>
+                        <span style="float: right"> {{i.date_created|timesince}}  </span>
+                            </br></br>
                             {% if i.post_type_id == 1 %}
                                 <p>{{ i.article.article_text }}</p>
 
                             {% elif i.post_type_id == 2 %}
 
-                                <a href="{{i.filepost.file.url}}"><img src="{{i.filepost.file.url}}" height="200px" width="200px" class="img-circle"/><a><br/>
+                                <a href="{{i.filepost.file.url}}"><img src="{{i.filepost.file.url}}" width="320" height="240" /></a><br/>
                             {% elif i.post_type_id == 3 %}
                                 <video width="320" height="240" controls>
                                     <source src="{{ i.filepost.file.url }}" >

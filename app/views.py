@@ -1,18 +1,13 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Post, PostType, Article, FilePost, User
+from django.shortcuts import render
+
+from .models import Post, PostType, Article, FilePost
 from .forms import MyForm
-from django.http import HttpResponseRedirect
-import re
-from datetime import datetime
-from django.core.urlresolvers import reverse
-# Create your views here.
 
 
 def filehandler(request, upload):
     import os
 
     ext = os.path.splitext(upload.name)[1]
-    print ext
     image_list = ['.jpg', '.jpeg', '.png']
     video_list = ['mp4', 'wmv', 'mkv', 'avi', 'mov']
     if ext in image_list:
@@ -34,21 +29,24 @@ def index(request):
             article_text = form.cleaned_data['article_text']
             description = form.cleaned_data['description']
 
+            # check if the post is an article
             if (upload is None) and article_text:
                 article = Article.objects.create(post_type_id=1, article_text=article_text, description=description,
                                                  user=request.user)
                 form = MyForm()
 
+            # check if the post is a file upload and handle the upload
             elif (upload is not None) and (not article_text):
                 post_type_id = filehandler(request, upload)
                 if post_type_id is not None:
-                    filepost = FilePost(post_type_id=post_type_id, user=request.user, file=upload,
-                                        description=description)
+                    filepost = FilePost.objects.create(post_type_id=post_type_id, user=request.user, file=upload,
+                                                       description=description)
                 else:
-                    message = "invalid File"
+                    message = "Invalid File"
                 form = MyForm()
             else:
-                message = "Enter only one"
+                message = "Enter either an article or a file"
+    # show all the post ordered by date, handling is defined in template
     result = Post.objects.select_related('article', 'filepost').order_by('-date_created')
 
     return render(request, 'app/index.html', {'form': form, 'result': result, 'message': message})
