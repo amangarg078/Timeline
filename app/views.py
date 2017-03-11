@@ -25,10 +25,13 @@ def index(request):
     if request.method == 'POST' and request.user.is_authenticated:
         form = MyForm(request.POST, request.FILES)
         if form.is_valid():
-            upload = request.FILES['upload']
             article_text = form.cleaned_data['article_text']
             description = form.cleaned_data['description']
-
+            if 'upload' in request.FILES:
+                upload = request.FILES['upload']
+            else:
+                upload = None
+                
             # check if the post is an article
             if (upload is None) and article_text:
                 article = Article.objects.create(post_type_id=1, article_text=article_text, description=description,
