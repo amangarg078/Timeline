@@ -60,7 +60,6 @@ def stream(file):
 
     with open(path,'rb') as open_file:
         yield open_file.read()
-        time.sleep(0.5)
 
 # function to handle filestreams of images and videos
 def vid(request, filepost):
