@@ -59,7 +59,7 @@ def index(request):
 def stream(file):
     file = file[1:]
     base = settings.BASE_DIR
-    path = os.path.join(base,'app',file)
+    path = os.path.join(base,'app',file).replace('\\','/')
 
     with open(path,'rb') as open_file:
         yield open_file.read()
