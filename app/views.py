@@ -57,9 +57,9 @@ def index(request):
 
 
 def stream(file):
-    file = file[1:]
+    file = file.replace('/media/','')
     base = settings.BASE_DIR
-    path = os.path.join(base,'app',file).replace('\\','/')
+    path = os.path.join(settings.MEDIA_ROOT,file)
 
     with open(path,'rb') as open_file:
         yield open_file.read()
