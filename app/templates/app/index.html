@@ -41,10 +41,10 @@
 
                             {% elif i.post_type_id == 2 %}
 
-                                <a href="{{i.filepost.file.url}}"><img src="{{i.filepost.file.url}}" width="320" height="240" /></a><br/>
+                                <a href="{{i.filepost.file.url}}"><img src="{%  url 'vid' i.filepost.file.url %}" width="320" height="240" /></a><br/>
                             {% elif i.post_type_id == 3 %}
                                 <video width="320" height="240" controls>
-                                    <source src="{{ i.filepost.file.url }}" >
+                                    <source src="{%  url 'vid' i.filepost.file.url %}" >
                                 </video>
                             {% endif %}
                     </div>

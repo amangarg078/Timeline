@@ -1,11 +1,11 @@
 from django.shortcuts import render
-
+from django.http import StreamingHttpResponse
 from .models import Post, PostType, Article, FilePost
 from .forms import MyForm
-
+import os, time
+from django.conf import settings
 
 def filehandler(request, upload):
-    import os
 
     ext = os.path.splitext(upload.name)[1]
     image_list = ['.jpg', '.jpeg', '.png']
@@ -50,4 +50,18 @@ def index(request):
     result = Post.objects.select_related('article', 'filepost').order_by('-date_created')
 
     return render(request, 'app/index.html', {'form': form, 'result': result, 'message': message})
+
+
+
+def stream(file):
+    file = file[1:]
+    base = os.getcwd()
+    path = os.path.join(base,'app',file).replace('/','\\')
+
+    with open(path,'rb') as open_file:
+        yield open_file.read()
+        
+
+def vid(request, filepost):
+    return StreamingHttpResponse(stream(filepost))
 
