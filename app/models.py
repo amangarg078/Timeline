@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.db import models
+from .search import PostIndex
 # Create your models here.
 
 
@@ -25,6 +26,16 @@ class Post(models.Model):
 
     def __unicode__(self):
         return '{0} - {1}'.format(self.user, self.post_type)
+    # Add indexing method to Post
+    def indexing(self):
+        obj = PostIndex(
+            meta={'id': self.id},
+            user=self.user.username,
+            date_created=self.date_created,
+            description=self.description,
+        )
+        obj.save()
+        return obj.to_dict(include_meta=True)
 
 
 class Article(Post):

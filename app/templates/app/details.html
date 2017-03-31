@@ -1,0 +1,42 @@
+{% extends 'app/base.html'%}
+{% load staticfiles %}
+{% block content %}
+<div class="container page-header hpad">
+    <div class="row">
+        <div class="col-md-3">
+        </div>
+    <div class="col-md-6 cent body">
+
+        <h1> Details Page   </h1>
+
+        </br>
+
+        <ul class="posts ">
+
+                <li class="post post-content">
+                    <div>
+
+                        <span style="float: left"> <b> {{result.user.username}} </b></span>
+                        <span style="float: center"><b>  {{result.description}} </b></span>
+                        <span style="float: right"> {{result.date_created|timesince}}  </span>
+                            </br></br>
+                            {% if result.post_type_id == 1 %}
+                                <p>{{ result.article.article_text }}</p>
+
+                            {% elif result.post_type_id == 2 %}
+
+                                <a href="{{result.filepost.file.url}}"><img src="{%  url 'vid' result.filepost.file.url %}" width="320" height="240" /></a><br/>
+                            {% elif result.post_type_id == 3 %}
+                                <video width="320" height="240" controls>
+                                    <source src="{%  url 'vid' result.filepost.file.url %}" >
+                                </video>
+                            {% endif %}
+                    </div>
+                </li>
+
+
+        </ul>
+    </div>
+</div>
+</div>
+{% endblock %}

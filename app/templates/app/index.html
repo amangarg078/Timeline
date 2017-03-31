@@ -8,8 +8,11 @@
     <div class="col-md-6 cent body">
 
         <h1>   Timeline!! </h1>
-        <h4> Enter an article or upload an image/video (for now!)</h4>
+
         </br>
+        {% if user.is_authenticated %}
+            <h4> Enter an article or upload an image/video (for now!)</h4>
+            </br>
         <form method="POST" action="" class="form-horizontal" enctype="multipart/form-data">
 
         {% csrf_token %}
@@ -27,13 +30,14 @@
 	    <br/>
 
         </form>
+        {% endif %}
         <ul class="posts ">
             {% for i in result%}
                 <li class="post post-content">
                     <div>
 
                         <span style="float: left"> <b> {{i.user.username}} </b></span>
-                        <span style="float: center"><b>  {{i.description}} </b></span>
+                        <span style="float: center"><b><a href="{% url 'post_details' i.id %}">  {{i.description}}</a> </b></span>
                         <span style="float: right"> {{i.date_created|timesince}}  </span>
                             </br></br>
                             {% if i.post_type_id == 1 %}
