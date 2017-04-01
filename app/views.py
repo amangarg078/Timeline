@@ -10,6 +10,9 @@ from rest_framework import generics
 from .serializers import ArticleSerializer, FilePostSerializer, PostSerializer
 from rest_framework.decorators import authentication_classes
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.parsers import FileUploadParser
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
 def filehandler(request, upload):
@@ -75,10 +78,6 @@ def form_handler(request, form):
         return form
 
 
-
-
-
-
 class IndexView(TemplateView):
     form_class = MyForm
     template_name = 'app/index.html'
@@ -134,19 +133,57 @@ class PostListAPIView(generics.ListAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.select_related('article', 'filepost').order_by('-date_created')
 
-@authentication_classes(TokenAuthentication)
-class ArticleAPIView(generics.CreateAPIView):
+
+class ArticleListAPIView(generics.ListAPIView):
+    serializer_class = ArticleSerializer
+    queryset = Article.objects.all().order_by('-date_created')
+
+
+class FileListAPIView(generics.ListAPIView):
+    serializer_class = FilePostSerializer
+    queryset = FilePost.objects.all().order_by('-date_created')
+
+
+@authentication_classes((TokenAuthentication,))
+class ArticleUploadAPIView(generics.CreateAPIView):
     serializer_class = ArticleSerializer
     queryset = Article.objects.all()
+    def perform_create(self, serializer):
+        post_type = PostType.objects.values().filter(type="Article")[0]
+        post_type_id = post_type['id']
+        serializer.save(post_type_id = post_type_id, user=self.request.user)
 
-@authentication_classes(TokenAuthentication)
+@authentication_classes((TokenAuthentication,))
 class FileUploadAPIView(generics.CreateAPIView):
     serializer_class = FilePostSerializer
     queryset = FilePost.objects.all()
 
+    def perform_create(self, serializer):
+        upload = self.request.data['file']
+        post_type_id = filehandler(self.request, upload)
+        serializer.save(post_type_id = post_type_id, user=self.request.user)
 
 
+@authentication_classes((TokenAuthentication,))
+class ArticleGetEditDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ArticleSerializer
+    queryset = Article.objects.all()
 
+    def perform_update(self, serializer):
+        post_type = PostType.objects.values().filter(type="Article")[0]
+        post_type_id = post_type['id']
+        serializer.save(post_type_id = post_type_id, user=self.request.user)
+
+
+@authentication_classes((TokenAuthentication,))
+class FilePostGetEditDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = FilePostSerializer
+    queryset = FilePost.objects.all()
+
+    def perform_update(self, serializer):
+        upload = self.request.data['file']
+        post_type_id = filehandler(self.request, upload)
+        serializer.save(post_type_id = post_type_id, user=self.request.user)
 
 
 

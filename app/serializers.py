@@ -13,11 +13,11 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 class FilePostSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
-
     class Meta:
         model = FilePost
-        fields = ('id', 'username', 'post_type', 'description', 'file', 'date_created')
-
+        fields = ('id', 'username', 'post_type_id', 'description', 'file', 'date_created')
+    def get_post_type_id(self):
+        return self.context["post_type_id"]
     def get_username(self, obj):
         return obj.user.username
 
