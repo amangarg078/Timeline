@@ -68,8 +68,7 @@ def form_handler(request, form):
             form = MyForm()
         else:
             message = "Enter either an article or a file"
-        if cache.get(request.user.id):
-            cache.delete(request.user.id)
+
         return form
     else:
         form = MyForm()
@@ -94,8 +93,10 @@ class IndexView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         result = cache_handler(request, self.key, self.value)
-        form = MyForm()
+        form = self.form_class(request.POST, request.FILES)
         form = form_handler(request, form)
+        if cache.get(request.user.id):
+            cache.delete(request.user.id)
 
         return render(request, self.template_name, {'form': form, 'result': result})
 
